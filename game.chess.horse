@@ -1,0 +1,233 @@
+using System;
+class Program
+{
+    static void text()
+    {
+        Console.ForegroundColor = ConsoleColor.DarkRed;
+        Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ШАХОВИЙ КIНЬ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        Console.WriteLine();
+        Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Потрiбно обiйти всi клiтинки поля~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine("Правила гри:");
+        Console.WriteLine("1) Пам'ятайте, що кiнь ходить лiтерою 'Г'");
+        Console.WriteLine("2) НЕ МОЖНА ставати двiчi на одну й ту ж клiтинку");
+        Console.WriteLine();
+    }
+
+    static string[,] Arr = new string[8, 8];
+    static void board()
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                Arr[i, j] = "-";
+            }
+        }
+    }
+    static void Main()
+    {
+        board();
+        int x = 0;
+        int y = 7;
+        int prevx = x;
+        int prevy = y;
+        Arr[x, y] = "2";
+        bool[,] moves = validmoves(x, y);
+
+        while (true)
+        {
+            Console.Clear();
+            text();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("~<Бузковим пiдсвiчуються можливi ходи>~");
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine("   A  B  C  D  E  F  G  H");
+            Console.WriteLine("  ------------------------");
+
+            for (int i = 0; i < 8; i++)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.Write((8 - i) + "|");
+
+                for (int j = 0; j < 8; j++)
+                {
+                    if ((i + j) % 2 == 0)
+                    {
+                        Console.BackgroundColor = ConsoleColor.DarkBlue;
+                    }
+                    else
+                    {
+                        Console.BackgroundColor = ConsoleColor.DarkYellow;
+                    }
+
+                    Console.ForegroundColor = ConsoleColor.White;
+
+                    if (i == x && j == y)
+                    {
+                        Console.BackgroundColor = ConsoleColor.Green;
+                    }
+                    else if (moves[i, j])
+                    {
+                        Console.BackgroundColor = ConsoleColor.Magenta;
+                    }
+
+                    if (Arr[i, j] == "2")
+                    {
+                        Console.ForegroundColor = ConsoleColor.Black;
+                    }
+                    else if (Arr[i, j] == "X")
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                    }
+
+                    Console.Write($" {Arr[i, j]} ");
+                    Console.ResetColor();
+                }
+                Console.WriteLine();
+            }
+
+            if (Arr[x, y] == "2" && !checkmove(x, y))
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("Немає доступних ходiв! Ви програли. Пробуєм ще раз? (Y/N)");
+
+                ConsoleKey response = Console.ReadKey().Key;
+                if (response == ConsoleKey.Y)
+                {
+                    restart(ref x, ref y, ref prevx, ref prevy);
+                    moves = validmoves(x, y);
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            ConsoleKeyInfo keyInfo = Console.ReadKey();
+
+            switch (keyInfo.Key)
+            {
+                case ConsoleKey.Enter:
+                    if (Arr[x, y] == "X")
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Неправильний хiд! Спробуйте ще раз");
+                        Console.ReadKey();
+                    }
+                    else if (moves[x, y])
+                    {
+                        Arr[x, y] = "2";
+                        Arr[prevx, prevy] = "X";
+                        prevx = x;
+                        prevy = y;
+                        moves = validmoves(x, y);
+
+                        if (victory())
+                        {
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine("Це премога! Починаєм знову? (Y/N)");
+                            ConsoleKey s = Console.ReadKey().Key;
+                            if ( s == ConsoleKey.Y)
+                            {
+                                restart(ref x, ref y, ref prevx, ref prevy);
+                                moves = validmoves(x, y);
+                            }
+                            else
+                            {
+                                return;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Неправильний хiд! Спробуйте ще раз");
+                        Console.ReadKey();
+                    }
+                    break;
+
+                case ConsoleKey.NumPad8:
+                    x = Math.Max(x - 1, 0);
+                    break;
+
+                case ConsoleKey.NumPad2:
+                    x = Math.Min(x + 1, 7);
+                    break;
+
+                case ConsoleKey.NumPad4:
+                    y = Math.Max(y - 1, 0);
+                    break;
+
+                case ConsoleKey.NumPad6:
+                    y = Math.Min(y + 1, 7);
+                    break;
+            }
+        }
+    }
+
+    static bool[,] validmoves(int x, int y) //Визначаю можливі ходи
+    {
+        bool[,] validmoves = new bool[8, 8];
+
+        int[] dx = { -2, -2, -1, -1, 1, 1, 2, 2 };
+        int[] dy = { -1, 1, -2, 2, -2, 2, -1, 1 };
+
+        for (int i = 0; i < 8; i++)
+        {
+            int nextx = x + dx[i];
+            int nexty = y + dy[i];
+
+            if (move(x, y, nextx, nexty))
+            {
+                validmoves[nextx, nexty] = true;
+            }
+        }
+        return validmoves;
+    }
+
+    static bool move(int x, int y, int newx, int newy)
+    {
+        return newx >= 0 && newx < 8 && newy >= 0 && newy < 8 && Arr[newx, newy] == "-" && (Math.Abs(newx - x) == 2 && Math.Abs(newy - y) == 1 || Math.Abs(newx - x) == 1 && Math.Abs(newy - y) == 2);
+    }
+    
+    static bool checkmove(int x, int y) 
+    {
+        int[] dx = { -2, -2, -1, -1, 1, 1, 2, 2 };
+        int[] dy = { -1, 1, -2, 2, -2, 2, -1, 1 };
+
+        for (int i = 0; i < 8; i++)
+        {
+            int nextx = x + dx[i];
+            int nexty = y + dy[i];
+
+            if (move(x, y, nextx, nexty) && Arr[nextx, nexty] == "-")
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    static bool victory()
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                if (Arr[i, j] == "-")
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    static void restart(ref int x, ref int y, ref int prevx, ref int prevy)
+    {
+        board();
+        x = prevx = 0;
+        y = prevy = 7;
+        Arr[x, y] = "2";
+    }
+}
