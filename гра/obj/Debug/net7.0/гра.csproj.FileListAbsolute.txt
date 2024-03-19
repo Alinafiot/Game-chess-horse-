@@ -1,0 +1,14 @@
+C:\Users\admin\source\repos\гра\bin\Debug\net7.0\гра.exe
+C:\Users\admin\source\repos\гра\bin\Debug\net7.0\гра.deps.json
+C:\Users\admin\source\repos\гра\bin\Debug\net7.0\гра.runtimeconfig.json
+C:\Users\admin\source\repos\гра\bin\Debug\net7.0\гра.dll
+C:\Users\admin\source\repos\гра\bin\Debug\net7.0\гра.pdb
+C:\Users\admin\source\repos\гра\obj\Debug\net7.0\гра.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\admin\source\repos\гра\obj\Debug\net7.0\гра.AssemblyInfoInputs.cache
+C:\Users\admin\source\repos\гра\obj\Debug\net7.0\гра.AssemblyInfo.cs
+C:\Users\admin\source\repos\гра\obj\Debug\net7.0\гра.csproj.CoreCompileInputs.cache
+C:\Users\admin\source\repos\гра\obj\Debug\net7.0\гра.dll
+C:\Users\admin\source\repos\гра\obj\Debug\net7.0\refint\гра.dll
+C:\Users\admin\source\repos\гра\obj\Debug\net7.0\гра.pdb
+C:\Users\admin\source\repos\гра\obj\Debug\net7.0\гра.genruntimeconfig.cache
+C:\Users\admin\source\repos\гра\obj\Debug\net7.0\ref\гра.dll
